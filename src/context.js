@@ -3,10 +3,24 @@ import axios from 'axios';
 
 const Context = React.createContext();
 
+const reducer = (state, action) => {
+    switch(action.type) {
+        case 'SEARCH_TRACKS': 
+            return {
+                ...state,
+                track_list: action.payload,
+                heading: 'Search Result'
+            };
+            default:
+                return state;
+    }
+};
+
 export class Provider extends Component {
     state = {
         track_list: [],
-        heading: 'Top ten Tracks'
+        heading: 'Top ten Tracks',
+        dispatch: action => this.setState(state => reducer(state, action))
     };
 
     componentDidMount() {
@@ -15,7 +29,7 @@ export class Provider extends Component {
     )
             .then(res => {
                 // console.log(res.data);
-                this.setState({track_list: res.data.message.body.track_list});
+                this.setState({ track_list: res.data.message.body.track_list });
             })
             .catch(err => console.log(err));
     }
